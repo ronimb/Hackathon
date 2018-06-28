@@ -1,16 +1,10 @@
 import numpy as np
 import pandas as pd
 from scipy import signal, io
-import pickle
-import matplotlib.pyplot as plt
 from typing import Union, Optional
 
 
 # %%
-class Data:
-    pass
-
-
 def load_synced_data(loc: str, start: Optional[int] = 0) \
         -> pd.DataFrame:
     """
@@ -74,10 +68,10 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     """
     vesper_data = pd.DataFrame(signal.savgol_filter(
         all_data[['x_acc', 'y_acc', 'z_acc',
-          'x_mag', 'y_mag', 'z_mag']].T,
+                  'x_mag', 'y_mag', 'z_mag']].T,
         window_length=31, polyorder=1).T,
                                columns=['x_acc', 'y_acc', 'z_acc',
-          'x_mag', 'y_mag', 'z_mag'])
+                                        'x_mag', 'y_mag', 'z_mag'])
 
     # Derive vectors from x,y,z data
     acc_vec = make_vec(*vesper_data[['x_acc', 'y_acc', 'z_acc']].values.T)
@@ -85,11 +79,11 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
 
     # Derive velocity from acceleration
     vel = all_data[['x_acc', 'y_acc', 'z_acc']].cumsum()
-    vel_vec = make_vec(*vel.values.T) # Derive velocity vector
+    vel_vec = make_vec(*vel.values.T)  # Derive velocity vector
 
     # Derive angular velocity from magnetometer reading
     angvel = mag_vec[['angle_xy', 'angle_zxy']].diff()
-    angvel_vec = make_vec(*angvel.values.T) # Derive angular velocity vector
+    angvel_vec = make_vec(*angvel.values.T)  # Derive angular velocity vector
 
     features = pd.DataFrame(
         {'x_acc': vesper_data.x_acc,
@@ -117,8 +111,9 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     )
     return features
 
+
 def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
-    -> object:
+                -> object:
     """
 
     :param arr: an array of any size
@@ -127,13 +122,15 @@ def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
     """
     means = arr.mean()
     stds = arr.std(ddof=0)
-    standardized_features = (features - means) / stds
+    standardized_features = (arr - means) / stds
     return standardized_features
+
+
 # %%
 if __name__ == '__main__':
     data_loc = 'alldata.mat'
     start_ind = 800
-    data = load_synced_data(data_loc, start_ind)
-    target = make_target(data)
-    features = make_features(data)
-    std_features = standardize(make_features(data))
+    real_data = load_synced_data(data_loc, start_ind)
+    real_target = make_target(real_data)
+    real_features = make_features(real_data)
+    real_std_features = standardize(real_features)
