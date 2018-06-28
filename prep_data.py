@@ -8,6 +8,7 @@ from typing import Union, Optional
 def load_synced_data(loc: str, start: Optional[int] = 0) \
         -> pd.DataFrame:
     """
+    Loads the data from specified location into a labeled pandas dataset
 
     :param start: first index to use for the dataset
     :param loc: location of file on disk
@@ -23,6 +24,8 @@ def load_synced_data(loc: str, start: Optional[int] = 0) \
 
 def make_target(all_data: pd.DataFrame) -> pd.DataFrame:
     """
+    uses x,y and z locations from the tracker to create a velocity vector for use as
+    the target for machine learning, also returns angles.
 
     :param all_data: Pandas dataframe containing both the tracker and vesper data
     :return: target: Pandas dataframe with the velocity vector and angles calculated based on the traacker
@@ -38,6 +41,7 @@ def make_vec(x: Union[np.array, pd.DataFrame, pd.Series, list],
              z: Optional[Union[np.array, pd.DataFrame, pd.Series, list]] = None) \
         -> Union[pd.DataFrame, pd.Series]:
     """
+    Calculates magnitude and angles(s) of vector based on readings from 2 or 3 dimensions
 
     :param x: measurements in one of 3 or 2 dimensions
     :param y: measurements in one of 3 or 2 dimensions
@@ -61,6 +65,7 @@ def make_vec(x: Union[np.array, pd.DataFrame, pd.Series, list],
 
 def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     """
+    Generates features for use as input to machine learning algorithm
 
     :param all_data: Pandas dataframe containing both the tracker and vesper data
     :return:
@@ -115,7 +120,8 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
 def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
                 -> object:
     """
-
+    Z-Standardization of data
+    
     :param arr: an array of any size
     :return:
     z-scored array
