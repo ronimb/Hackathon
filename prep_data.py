@@ -15,8 +15,8 @@ def load_synced_data(loc: str, start: Optional[int] = 0) \
         -> pd.DataFrame:
     """
 
-    :param start:
-    :param loc:
+    :param start: first index to use for the dataset
+    :param loc: location of file on disk
     :return:
     """
     data = io.loadmat(loc)['alldata'][start:]
@@ -30,8 +30,8 @@ def load_synced_data(loc: str, start: Optional[int] = 0) \
 def make_target(all_data: pd.DataFrame) -> pd.DataFrame:
     """
 
-    :param all_data:
-    :return:
+    :param all_data: Pandas dataframe containing both the tracker and vesper data
+    :return: target: Pandas dataframe with the velocity vector and angles calculated based on the traacker
     """
     trc_loc = all_data[['x_trc', 'y_trc', 'z_trc']]
     trc_vel = trc_loc.diff()
@@ -43,6 +43,13 @@ def make_vec(x: Union[np.array, pd.DataFrame, pd.Series, list],
              y: Union[np.array, pd.DataFrame, pd.Series, list],
              z: Optional[Union[np.array, pd.DataFrame, pd.Series, list]] = None) \
         -> Union[pd.DataFrame, pd.Series]:
+    """
+
+    :param x: measurements in one of 3 or 2 dimensions
+    :param y: measurements in one of 3 or 2 dimensions
+    :param z: measurements in one of 3 or 2 dimensions
+    :return: combined dataframe of vector derived from all measurements: contains magnitude and angles
+    """
     if z is None:
         magnitude = np.linalg.norm([x, y], axis=0)
         angle_xy = np.arctan(x / y)
@@ -61,8 +68,9 @@ def make_vec(x: Union[np.array, pd.DataFrame, pd.Series, list],
 def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     """
 
-    :param all_data:
-    :return
+    :param all_data: Pandas dataframe containing both the tracker and vesper data
+    :return:
+    A pandas dataframe containing labeled features calculated from the vesper data
     """
     vesper_data = pd.DataFrame(signal.savgol_filter(
         all_data[['x_acc', 'y_acc', 'z_acc',
@@ -109,20 +117,21 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     )
     return features
 
-def standardize(features: Union[list, np.array, pd.Series, pd.DataFrame]) \
+def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
     -> object:
     """
 
-    :param features:
+    :param arr: an array of any size
     :return:
+    z-scored array
     """
-    means = features.mean()
-    stds = features.std(ddof=0)
+    means = arr.mean()
+    stds = arr.std(ddof=0)
     standardized_features = (features - means) / stds
     return standardized_features
 # %%
 if __name__ == '__main__':
-    data_loc = r"E:\data\18-06-26_data_for_hackton\alldata.mat"
+    data_loc = 'alldata.mat'
     start_ind = 800
     data = load_synced_data(data_loc, start_ind)
     target = make_target(data)
