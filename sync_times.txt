@@ -1,0 +1,89 @@
+rat1_22_try1
+============
+
+
+tracker start: 16:53:20
+
+vesper in my hand
+=================
+5 squats: 16:53: 42
+
+3 spins cw + 3 spins ccw: 16:54:40
+
+XY motion: 16:59:20
+
+5 minute walking around: 17:01:00
+
+1 minute stationary:17:04:00
+
+3+3 audio snaps: 17:07:00
+
+
+
+vesper on rat
+=============
+5 squats: 17:12:10
+
+
+3 spins cw + 3 spins ccw:17:13:10 (accidentaly went ccw first) + (I spun, but the rat wriggled a lot)
+
+
+free roaming rat:17:14:00
+
+
+end tracking: 17:54:00
+
+
+
+
+
+rat2_21_try1
+============
+
+tracking start: 19:37:55
+
+markers weren't on... starting again - 19:42:26
+
+tracking end: 20:51:40
+
+
+--------------------------
+vesper stayed on for try2|
+--------------------------
+
+
+rat2_21_try2
+============
+
+tracking start: 21:16:20
+
+6 audio snaps
+
+(calibrations: on rat only)
+
+
+
+rat1_try2
+=========
+
+tracking start: 22:58:10
+
+6 snaps: 23:04:00
+
+start free raom: 23:19:00
+
+tracking end: 23:58:00
+
+vesper still running, will use it for the next rat
+
+
+(no rat 3 because of problems. if there's any reference to rat3, it means rat1_try2)
+
+
+rat4_try1
+=========
+
+tracking start: 00:20:45
+
+2-2 snaps: 00:26:22
+

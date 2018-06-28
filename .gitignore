@@ -108,3 +108,4 @@ venv.bak/
 
 #
 data_exploration.py
+make_plots.py
