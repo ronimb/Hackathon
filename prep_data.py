@@ -6,7 +6,18 @@ from typing import Union, Optional
 
 
 # %%
-def butter_bandpass(data, lowcut, highcut, fs, order=5):
+def butter_bandpass(data: Union[list, np.array, pd.Series, pd.DataFrame],
+                    lowcut: int, highcut: int, fs: int=59, order: int= 5)\
+        -> Union[list, np.array, pd.Series, pd.DataFrame]:
+    """
+
+    :param data: Signal to be filtered, if multiple signals must be row-wise
+    :param lowcut: low-cut frequency
+    :param highcut: high-cut frequency
+    :param fs: sampling rate
+    :param order: filter order
+    :return: band-passed signal
+    """
     nyq = 0.5 * fs
     low = lowcut / nyq
     high = highcut / nyq
