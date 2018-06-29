@@ -3,15 +3,21 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
+from scipy.fftpack import fft, fftfreq, fftshift
 from prep_data import *
 # %%
-# Lowpass 5Hz!!!
+def plot_spectral_content(data, sr):
+    data_f = fft(data)
+    freqs = fftfreq(max(data.shape), 1/sr)
+    p_inds = freqs >= 0
+    plt.plot(freqs[p_inds], (1 / max(data.shape)) * np.abs(data_f[p_inds]))
+    plt.show()
+# %%
 sensor_loc = r"E:\data\18-06-26_data_for_hackton\Vesper Data\rat1_try2 - rat4_try1.csv"
 sensor_data = pd.read_csv(sensor_loc)
 times = np.array(sensor_data.iloc[:, 0])
 sensor_data = sensor_data.iloc[:,1:]
 sensor_data['time'] = [datetime.fromordinal(t.astype(int)) + timedelta(days=t%1) - timedelta(days = 366) for t in times]
-# sensor_data['time'] = np.arange(sensor_data.shape[0]) * (1 / 50)
 
 camera_loc = r"E:\data\18-06-26_data_for_hackton\Tracking Data\rat1_try2.csv"
 camera_data = pd.read_csv(camera_loc)
@@ -68,5 +74,33 @@ ax22 = ax12.twinx()
 ax22.plot(target.magnitude, '-r')
 ax22.set_ylabel('Velocity magnitude', color='r')
 ax22.tick_params('y', colors='r')
-
-
+# %%
+fig, ax2 = plt.subplots(sharex=True)
+x = real_data.x_acc
+sr = 50
+bx = butter_bandpass(x, 1, 5, sr)
+plt.figure()
+plt.subplot(221)
+plt.plot(x)
+plt.title('Original x')
+plt.subplot(222)
+plot_spectral_content(x, 50)
+plt.title('X power spectrum')
+plt.subplot(223)
+plt.plot(bx)
+plt.title('X filtered between 1-5Hz')
+plt.xlabel('Sample #')
+plt.subplot(224)
+plot_spectral_content(bx, 50)
+plt.title('X filtered spectral content')
+plt.xlabel('Frequency (Hz)')
+# %%
+plt.figure()
+plt.subplot(121)
+plt.plot(x.cumsum())
+plt.title('X derived velocity')
+plt.ylabel('Velocity')
+plt.subplot(122)
+plt.plot(bx.cumsum())
+plt.title('Filtered x derived velocity')
+plt.ylabel('Velocity')

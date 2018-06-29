@@ -1,10 +1,20 @@
 import numpy as np
 import pandas as pd
 from scipy import signal, io
+from scipy.fftpack import fft, fftfreq, fftshift
 from typing import Union, Optional
 
 
 # %%
+def butter_bandpass(data, lowcut, highcut, fs, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = signal.butter(order, [low, high], btype='band')
+    y = signal.lfilter(b, a, data)
+    return y
+
+
 def load_synced_data(loc: str, start: Optional[int] = 0) \
         -> pd.DataFrame:
     """
@@ -71,10 +81,10 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     :return:
     A pandas dataframe containing labeled features calculated from the vesper data
     """
-    vesper_data = pd.DataFrame(signal.savgol_filter(
+    vesper_data = pd.DataFrame(butter_bandpass(
         all_data[['x_acc', 'y_acc', 'z_acc',
                   'x_mag', 'y_mag', 'z_mag']].T,
-        window_length=31, polyorder=1).T,
+        1, 5, 50).T,
                                columns=['x_acc', 'y_acc', 'z_acc',
                                         'x_mag', 'y_mag', 'z_mag'])
 
@@ -116,12 +126,11 @@ def make_features(all_data: pd.DataFrame) -> pd.DataFrame:
     )
     return features
 
-
 def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
                 -> object:
     """
     Z-Standardization of data
-    
+
     :param arr: an array of any size
     :return:
     z-scored array
@@ -130,8 +139,6 @@ def standardize(arr: Union[np.array, pd.Series, pd.DataFrame]) \
     stds = arr.std(ddof=0)
     standardized_features = (arr - means) / stds
     return standardized_features
-
-
 # %%
 if __name__ == '__main__':
     data_loc = 'alldata.mat'
